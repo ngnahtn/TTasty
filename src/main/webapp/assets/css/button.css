@@ -1,0 +1,52 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Jul 8, 2025, 9:07:12 PM
+    Author     : tung
+*/
+
+.custom-orange-btn {
+    background-color: #ff6600;      /* Cam nổi bật */
+    color: #fff;
+    border: none;
+    padding: 10px 24px;             /* Thon hơn */
+    font-size: 15px;
+    border-radius: 30px;            /* Bo tròn để gọn gàng */
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* bóng nhẹ */
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+}
+
+.custom-orange-btn:hover {
+    background-color: #e65c00;      /* Màu cam đậm hơn khi hover */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+.place-order-row {
+    display: flex;
+    align-items: center;
+    gap: 16px; /* khoảng cách giữa nút và thông báo */
+    margin-top: 20px;
+    flex-wrap: wrap; /* để khi màn hình nhỏ vẫn xuống dòng đẹp */
+}
+
+.error-message {
+    color: #ff3333;
+    font-weight: 500;
+    font-size: 15px;
+    margin: 0;
+    white-space: nowrap;
+}
+
+.success-message {
+    color: #28a745;
+    font-weight: 500;
+    font-size: 15px;
+    margin: 0;
+}
