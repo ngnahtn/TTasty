@@ -189,6 +189,18 @@
                 gap: 0.5rem;
             }
 
+            #rememberDuration {
+                padding: 2px 5px;
+                border-radius: 4px;
+                border: 1px solid #ddd;
+                background-color: white;
+            }
+
+            #rememberDuration:focus {
+                border-color: var(--primary-color);
+                outline: none;
+            }
+
             .form-check-input {
                 width: 1rem;
                 height: 1rem;
@@ -435,12 +447,14 @@
                     <form action="login" method="post" id="loginForm" class="login-form">
                         <div class="form-group">
                             <input type="text" class="form-control" id="username" name="user" placeholder="Username"
+                                   value="<%= request.getCookies() != null ? java.util.Arrays.stream(request.getCookies()).filter(c -> c.getName().equals("username")).findFirst().map(c -> c.getValue()).orElse("") : "" %>"
                                    >
                             <div class="error-message">Please enter a valid username</div>
                         </div>
 
                         <div class="form-group">
                             <input type="password" class="form-control" id="password" name="pass" placeholder="Password"
+                                   value="<%= request.getCookies() != null ? java.util.Arrays.stream(request.getCookies()).filter(c -> c.getName().equals("password")).findFirst().map(c -> c.getValue()).orElse("") : "" %>"
                                    >
                             <button type="button" class="password-toggle">
                                 <i class="fas fa-eye"></i>
@@ -452,6 +466,12 @@
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input" id="remember" name="rem">
                                 <label class="form-check-label" for="remember">Remember me</label>
+                                <select id="rememberDuration" class="form-control" style="display: none; width: auto; margin-left: 10px; font-size: 0.9em;">
+                                    <option value="1">1 ngày</option>
+                                    <option value="7">7 ngày</option>
+                                    <option value="30" selected>30 ngày</option>
+                                    <option value="90">90 ngày</option>
+                                </select>
                             </div>
                             <a href="forgotPassword.jsp" class="forgot-password">Forgot Password?</a>
                         </div>
@@ -568,6 +588,66 @@
                     input.attr('type', 'password');
                     icon.removeClass('fa-eye-slash').addClass('fa-eye');
                 }
+            });
+
+            // Xử lý Remember me với localStorage
+            $(document).ready(function() {
+                // Kiểm tra và điền thông tin đăng nhập từ localStorage
+                const savedUsername = localStorage.getItem('rememberedUsername');
+                const rememberMe = localStorage.getItem('rememberMe');
+                const duration = localStorage.getItem('rememberDuration');
+                
+                if (savedUsername && rememberMe === 'true') {
+                    // Kiểm tra xem cookie có hết hạn chưa
+                    const expiryDate = localStorage.getItem('rememberExpiry');
+                    if (expiryDate && new Date() < new Date(expiryDate)) {
+                        $('#username').val(savedUsername);
+                        $('#remember').prop('checked', true);
+                        $('#rememberDuration').val(duration || '30');
+                        $('#rememberDuration').show();
+                    } else {
+                        // Nếu đã hết hạn thì xóa
+                        localStorage.removeItem('rememberedUsername');
+                        localStorage.removeItem('rememberMe');
+                        localStorage.removeItem('rememberDuration');
+                        localStorage.removeItem('rememberExpiry');
+                    }
+                }
+
+                // Hiện/ẩn select box khi check/uncheck Remember me
+                $('#remember').change(function() {
+                    if ($(this).is(':checked')) {
+                        $('#rememberDuration').show();
+                    } else {
+                        $('#rememberDuration').hide();
+                    }
+                });
+
+                // Xử lý form submit
+                $('#loginForm').submit(function() {
+                    const username = $('#username').val();
+                    const rememberMe = $('#remember').is(':checked');
+                    
+                    if (rememberMe) {
+                        const duration = parseInt($('#rememberDuration').val());
+                        const expiryDate = new Date();
+                        expiryDate.setDate(expiryDate.getDate() + duration);
+                        
+                        // Lưu username và thời gian hết hạn vào localStorage
+                        localStorage.setItem('rememberedUsername', username);
+                        localStorage.setItem('rememberMe', 'true');
+                        localStorage.setItem('rememberDuration', duration.toString());
+                        localStorage.setItem('rememberExpiry', expiryDate.toISOString());
+                    } else {
+                        // Xóa thông tin khỏi localStorage nếu không chọn Remember me
+                        localStorage.removeItem('rememberedUsername');
+                        localStorage.removeItem('rememberMe');
+                        localStorage.removeItem('rememberDuration');
+                        localStorage.removeItem('rememberExpiry');
+                    }
+                    
+                    return true; // Cho phép form submit
+                });
             });
 
         </script>
