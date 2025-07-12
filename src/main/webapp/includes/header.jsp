@@ -90,7 +90,7 @@
                                 
                                 <li>
                                     <a href="logout" class="logout-link">
-                                        <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                                        <i class="fas fa-sign-out-alt"></i> Logout
                                     </a>
                                 </li>
                             </c:if>
@@ -98,7 +98,7 @@
                             <c:if test="${sessionScope.Account == null}">
                                 <li>
                                     <a href="login.jsp" class="login-link">
-                                        <i class="fas fa-sign-in-alt"></i> Đăng nhập
+                                        <i class="fas fa-sign-in-alt"></i> Login
                                     </a>
                                 </li>
                             </c:if>
