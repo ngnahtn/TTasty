@@ -52,7 +52,7 @@
                                         <a href="about.jsp">About</a>
                                     </li>
                                     <li class="${pageContext.request.servletPath == '/shop.jsp' ? 'current-list-item' : ''}">
-                                        <a href="shop.jsp">Shop</a>
+                                        <a href="shop">Shop</a>
                                     </li>
                                     <li class="${pageContext.request.servletPath == '/feedback.jsp' ? 'current-list-item' : ''}">
                                         <a href="feedback.jsp">Feedback</a>
@@ -81,7 +81,7 @@
                                 <!-- Shopping Cart (Only for regular users) -->
                                 <c:if test="${sessionScope.Account.role != 1}">
                                     <li>
-                                        <a href="cart.jsp" class="shopping-cart">
+                                        <a href="showCart" class="shopping-cart">
                                             <i class="fas fa-shopping-cart"></i>
                                             <span class="badge">${sessionScope.size == null ? 0 : sessionScope.size}</span>
                                         </a>
