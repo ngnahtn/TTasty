@@ -112,20 +112,17 @@ public class LoginServlet extends HttpServlet {
 
         // check login 
         UserDAO dao = new UserDAO();
-        if (!dao.login(username, password)) {
+        User account = dao.loginAndGetUser(username, password);
+        if (account == null) {
             request.setAttribute("Login", "username or password isn't correct");
             request.getRequestDispatcher("login.jsp").forward(request, response);
         } else {
-
             // luu account nguoi dung
             session.removeAttribute("Account");
-            User account = dao.getUserByUsername(username);
             session.setAttribute("Account", account);
 
-            User u = (User) session.getAttribute("Account");
-
             //neu la admin
-            if (u.getRole() == 1) {
+            if (account.getRole() == 1) {
                 session.setAttribute("user", username);
                 response.sendRedirect("adminHome.jsp");
                 return;

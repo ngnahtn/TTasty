@@ -82,14 +82,26 @@ public class UserDAO {
         return result.isEmpty() ? null : result.get(0);
     }
 
-    public boolean login(String username, String password) {
+    // Method mới gộp login và get user
+    public User loginAndGetUser(String username, String password) {
         EntityManager em = emf.createEntityManager();
-        Long count = em.createQuery("SELECT COUNT(u) FROM User u WHERE u.username = :username AND u.password = :password", Long.class)
-                       .setParameter("username", username)
-                       .setParameter("password", password)
-                       .getSingleResult();
-        em.close();
-        return count > 0;
+        try {
+            TypedQuery<User> query = em.createQuery(
+                "SELECT u FROM User u WHERE u.username = :username AND u.password = :password",
+                User.class
+            );
+            query.setParameter("username", username);
+            query.setParameter("password", password);
+            List<User> result = query.getResultList();
+            return result.isEmpty() ? null : result.get(0);
+        } finally {
+            em.close();
+        }
+    }
+
+    // Giữ lại method này để tương thích ngược
+    public boolean login(String username, String password) {
+        return loginAndGetUser(username, password) != null;
     }
 
     public void changePassword(String username, String newPassword) {

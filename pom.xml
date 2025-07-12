@@ -38,6 +38,27 @@
             <version>6.2.6.Final</version> <!-- hoặc bản mới hơn -->
         </dependency>
         
+        <!-- HikariCP Connection Pool -->
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-hikaricp</artifactId>
+            <version>6.2.6.Final</version>
+        </dependency>
+        
+        <!-- Hibernate JCache -->
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-jcache</artifactId>
+            <version>6.2.6.Final</version>
+        </dependency>
+        
+        <!-- EhCache -->
+        <dependency>
+            <groupId>org.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+            <version>3.10.8</version>
+        </dependency>
+        
         <!-- MS SQL SERVER -->
         <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
