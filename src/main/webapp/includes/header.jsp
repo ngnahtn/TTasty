@@ -9,7 +9,7 @@
                 <div class="main-menu-wrap">
                     <!-- Logo -->
                     <div class="site-logo">
-                        <a href="index.jsp">
+                        <a href="${sessionScope.Account.role == 1 ? 'adminHome.jsp' : 'index.jsp'}">
                             <img src="assets/img/TTasty.png" alt="TTasty" style="max-height: 60px;">
                         </a>
                     </div>
@@ -24,65 +24,84 @@
                     <!-- Main Menu -->
                     <nav class="main-menu">
                         <ul>
-                            <li class="${pageContext.request.servletPath == '/index.jsp' ? 'current-list-item' : ''}">
-                                <a href="index.jsp">Home</a>
-                            </li>
-                            <li class="${pageContext.request.servletPath == '/about.jsp' ? 'current-list-item' : ''}">
-                                <a href="about.jsp">About</a>
-                            </li>
-                            <li class="${pageContext.request.servletPath == '/shop.jsp' ? 'current-list-item' : ''}">
-                                <a href="shop.jsp">Shop</a>
-                            </li>
-                            <li class="${pageContext.request.servletPath == '/feedback.jsp' ? 'current-list-item' : ''}">
-                                <a href="feedback.jsp">Feedback</a>
-                            </li>
-                            
-                            <c:if test="${sessionScope.acc != null}">
-                                <li class="history-dropdown">
-                                    <a href="#">History <i class="fas fa-chevron-down"></i></a>
-                                    <ul class="sub-menu">
-                                        <li><a href="historyOrder.jsp">Order History</a></li>
-                                        <c:if test="${sessionScope.acc.isAdmin == 1}">
-                                            <li><a href="historyFeedback.jsp">Feedback History</a></li>
-                                        </c:if>
-                                    </ul>
-                                </li>
-                            </c:if>
-                            
-                            <c:if test="${sessionScope.acc.isAdmin == 1}">
-                                <li class="${pageContext.request.servletPath == '/adminHome.jsp' ? 'current-list-item' : ''}">
-                                    <a href="adminHome.jsp">Admin</a>
-                                </li>
-                            </c:if>
-
-                            <!-- User Menu -->
                             <c:choose>
-                                <c:when test="${sessionScope.user != null}">
-                                    <li class="user-menu">
-                                        <a href="#" class="user-link">
-                                            <i class="fas fa-user"></i> ${sessionScope.user}
+                                <c:when test="${sessionScope.Account.role == 1}">
+                                    <!-- Admin Menu Items -->
+                                    <li class="${pageContext.request.servletPath == '/manageProduct.jsp' ? 'current-list-item' : ''}">
+                                        <a href="manageProducts">
+                                            <i class="fas fa-box-open"></i> Quản lý sản phẩm
                                         </a>
                                     </li>
+                                    <li class="${pageContext.request.servletPath == '/order.jsp' ? 'current-list-item' : ''}">
+                                        <a href="order">
+                                            <i class="fas fa-shopping-cart"></i> Đơn hàng
+                                        </a>
+                                    </li>
+                                    <li class="${pageContext.request.servletPath == '/historyFeedback.jsp' ? 'current-list-item' : ''}">
+                                        <a href="historyFeedback">
+                                            <i class="fas fa-comments"></i> Phản hồi
+                                        </a>
+                                    </li>
+                                </c:when>
+                                <c:otherwise>
+                                    <!-- User Menu Items -->
+                                    <li class="${pageContext.request.servletPath == '/index.jsp' ? 'current-list-item' : ''}">
+                                        <a href="index.jsp">Home</a>
+                                    </li>
+                                    <li class="${pageContext.request.servletPath == '/about.jsp' ? 'current-list-item' : ''}">
+                                        <a href="about.jsp">About</a>
+                                    </li>
+                                    <li class="${pageContext.request.servletPath == '/shop.jsp' ? 'current-list-item' : ''}">
+                                        <a href="shop.jsp">Shop</a>
+                                    </li>
+                                    <li class="${pageContext.request.servletPath == '/feedback.jsp' ? 'current-list-item' : ''}">
+                                        <a href="feedback.jsp">Feedback</a>
+                                    </li>
+                                    
+                                    <c:if test="${sessionScope.Account != null}">
+                                        <li class="history-dropdown">
+                                            <a href="#">History <i class="fas fa-chevron-down"></i></a>
+                                            <ul class="sub-menu">
+                                                <li><a href="historyOrder">Order History</a></li>
+                                            </ul>
+                                        </li>
+                                    </c:if>
+                                </c:otherwise>
+                            </c:choose>
+
+                            <!-- User Profile Section -->
+                            <c:if test="${sessionScope.Account != null}">
+                                <li class="user-menu">
+                                    <a href="#" class="user-link">
+                                        <i class="fas fa-user-circle"></i>
+                                        <span>${sessionScope.user}</span>
+                                    </a>
+                                </li>
+                                
+                                <!-- Shopping Cart (Only for regular users) -->
+                                <c:if test="${sessionScope.Account.role != 1}">
                                     <li>
                                         <a href="cart.jsp" class="shopping-cart">
                                             <i class="fas fa-shopping-cart"></i>
                                             <span class="badge">${sessionScope.size == null ? 0 : sessionScope.size}</span>
                                         </a>
                                     </li>
-                                    <li>
-                                        <a href="logout" class="logout-link">
-                                            <i class="fas fa-sign-out-alt"></i> Logout
-                                        </a>
-                                    </li>
-                                </c:when>
-                                <c:otherwise>
-                                    <li>
-                                        <a href="login.jsp" class="login-link">
-                                            <i class="fas fa-user"></i> Login
-                                        </a>
-                                    </li>
-                                </c:otherwise>
-                            </c:choose>
+                                </c:if>
+                                
+                                <li>
+                                    <a href="logout" class="logout-link">
+                                        <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                                    </a>
+                                </li>
+                            </c:if>
+                            
+                            <c:if test="${sessionScope.Account == null}">
+                                <li>
+                                    <a href="login.jsp" class="login-link">
+                                        <i class="fas fa-sign-in-alt"></i> Đăng nhập
+                                    </a>
+                                </li>
+                            </c:if>
                         </ul>
                     </nav>
                 </div>
@@ -134,35 +153,34 @@
     color: #333;
     font-weight: 500;
     text-decoration: none;
-    padding: 10px 0;
-    display: block;
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 8px;
     transition: all 0.3s ease;
 }
 
 .main-menu ul li a:hover,
 .main-menu ul li.current-list-item a {
     color: #F28123;
+    background: #f8f9fa;
+}
+
+.main-menu ul li a i {
+    font-size: 1.1rem;
 }
 
 /* User Menu Styles */
 .user-menu .user-link {
-    color: #333;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    padding: 8px 15px;
+    background: #f8f9fa;
     border-radius: 20px;
-    transition: all 0.3s ease;
+    padding: 8px 15px;
 }
 
 .user-menu .user-link:hover {
-    background: #f8f9fa;
+    background: #e9ecef;
     color: #F28123;
-}
-
-.user-menu .user-link i {
-    font-size: 16px;
 }
 
 /* Login/Logout Button Styles */
@@ -173,7 +191,6 @@
     padding: 8px 15px;
     border-radius: 20px;
     transition: all 0.3s ease;
-    text-decoration: none;
 }
 
 .login-link {
@@ -199,15 +216,8 @@
 /* Shopping Cart Styles */
 .shopping-cart {
     position: relative;
-    color: #333;
-    padding: 8px 15px;
-    border-radius: 20px;
-    transition: all 0.3s ease;
-}
-
-.shopping-cart:hover {
-    color: #F28123;
-    background: #f8f9fa;
+    padding: 8px 15px !important;
+    border-radius: 20px !important;
 }
 
 .shopping-cart .badge {
@@ -260,46 +270,6 @@
 }
 
 /* Mobile Menu */
-.mobile-menu {
-    width: 30px;
-    height: 20px;
-    position: relative;
-    cursor: pointer;
-    display: none;
-}
-
-.mobile-menu span {
-    display: block;
-    position: absolute;
-    height: 2px;
-    width: 100%;
-    background: #333;
-    border-radius: 9px;
-    opacity: 1;
-    left: 0;
-    transform: rotate(0deg);
-    transition: .25s ease-in-out;
-}
-
-.mobile-menu span:nth-child(1) { top: 0px; }
-.mobile-menu span:nth-child(2) { top: 8px; }
-.mobile-menu span:nth-child(3) { top: 16px; }
-
-.mobile-menu.open span:nth-child(1) {
-    top: 8px;
-    transform: rotate(135deg);
-}
-
-.mobile-menu.open span:nth-child(2) {
-    opacity: 0;
-    left: -60px;
-}
-
-.mobile-menu.open span:nth-child(3) {
-    top: 8px;
-    transform: rotate(-135deg);
-}
-
 @media (max-width: 991px) {
     .mobile-menu {
         display: block;
@@ -323,6 +293,11 @@
     
     .main-menu ul li {
         margin: 10px 0;
+        width: 100%;
+    }
+    
+    .main-menu ul li a {
+        justify-content: center;
     }
     
     .history-dropdown .sub-menu {
@@ -332,10 +307,6 @@
         visibility: visible;
         transform: none;
         padding-left: 20px;
-    }
-    
-    .user-menu, .shopping-cart, .logout-link {
-        margin: 5px 0;
     }
 }
 </style>

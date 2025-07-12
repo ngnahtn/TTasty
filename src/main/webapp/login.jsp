@@ -250,6 +250,23 @@
                 box-shadow: 0 10px 20px rgba(255, 107, 107, 0.2);
             }
 
+            .error-message {
+                background-color: #FFE5E5;
+                color: #D63301;
+                padding: 12px;
+                border-radius: 8px;
+                margin-bottom: 20px;
+                font-size: 0.9rem;
+                display: flex;
+                align-items: center;
+                border-left: 4px solid #D63301;
+            }
+
+            .error-message i {
+                margin-right: 8px;
+                font-size: 1.1rem;
+            }
+
             .tab-container {
                 display: flex;
                 margin-bottom: 2rem;
@@ -392,9 +409,21 @@
             <div class="login-card">
                 <div class="login-header">
                     <img src="assets/img/TTasty.png" alt="TTasty Logo" class="rounded-circle">
-                    <h3>Welcome to TTasty</h3>
-                    <p>Please login to continue</p>
+                    <h3>Welcome Back!</h3>
+                    <p>Please login to your account</p>
                 </div>
+                
+                <%
+                    String loginError = (String)request.getAttribute("Login");
+                    if(loginError != null) {
+                %>
+                <div class="error-message">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <%= loginError %>
+                </div>
+                <%
+                    }
+                %>
 
                 <div class="tab-container">
                     <div class="tab-item active" data-form="login">Sign In</div>
