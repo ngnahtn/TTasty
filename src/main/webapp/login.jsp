@@ -466,12 +466,6 @@
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input" id="remember" name="rem">
                                 <label class="form-check-label" for="remember">Remember me</label>
-                                <select id="rememberDuration" class="form-control" style="display: none; width: auto; margin-left: 10px; font-size: 0.9em;">
-                                    <option value="1">1 ngày</option>
-                                    <option value="7">7 ngày</option>
-                                    <option value="30" selected>30 ngày</option>
-                                    <option value="90">90 ngày</option>
-                                </select>
                             </div>
                             <a href="forgotPassword.jsp" class="forgot-password">Forgot Password?</a>
                         </div>
@@ -595,7 +589,6 @@
                 // Kiểm tra và điền thông tin đăng nhập từ localStorage
                 const savedUsername = localStorage.getItem('rememberedUsername');
                 const rememberMe = localStorage.getItem('rememberMe');
-                const duration = localStorage.getItem('rememberDuration');
                 
                 if (savedUsername && rememberMe === 'true') {
                     // Kiểm tra xem cookie có hết hạn chưa
@@ -603,25 +596,13 @@
                     if (expiryDate && new Date() < new Date(expiryDate)) {
                         $('#username').val(savedUsername);
                         $('#remember').prop('checked', true);
-                        $('#rememberDuration').val(duration || '30');
-                        $('#rememberDuration').show();
                     } else {
                         // Nếu đã hết hạn thì xóa
                         localStorage.removeItem('rememberedUsername');
                         localStorage.removeItem('rememberMe');
-                        localStorage.removeItem('rememberDuration');
                         localStorage.removeItem('rememberExpiry');
                     }
                 }
-
-                // Hiện/ẩn select box khi check/uncheck Remember me
-                $('#remember').change(function() {
-                    if ($(this).is(':checked')) {
-                        $('#rememberDuration').show();
-                    } else {
-                        $('#rememberDuration').hide();
-                    }
-                });
 
                 // Xử lý form submit
                 $('#loginForm').submit(function() {
@@ -629,20 +610,18 @@
                     const rememberMe = $('#remember').is(':checked');
                     
                     if (rememberMe) {
-                        const duration = parseInt($('#rememberDuration').val());
+                        // Set thời gian hết hạn là 1 ngày
                         const expiryDate = new Date();
-                        expiryDate.setDate(expiryDate.getDate() + duration);
+                        expiryDate.setDate(expiryDate.getDate() + 1);
                         
                         // Lưu username và thời gian hết hạn vào localStorage
                         localStorage.setItem('rememberedUsername', username);
                         localStorage.setItem('rememberMe', 'true');
-                        localStorage.setItem('rememberDuration', duration.toString());
                         localStorage.setItem('rememberExpiry', expiryDate.toISOString());
                     } else {
                         // Xóa thông tin khỏi localStorage nếu không chọn Remember me
                         localStorage.removeItem('rememberedUsername');
                         localStorage.removeItem('rememberMe');
-                        localStorage.removeItem('rememberDuration');
                         localStorage.removeItem('rememberExpiry');
                     }
                     
