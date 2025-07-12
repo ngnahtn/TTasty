@@ -55,24 +55,34 @@
                                 </li>
                             </c:if>
 
-                            <li>
-                                <div class="header-icons">
-                                    <c:if test="${sessionScope.acc == null}">
-                                        <a href="login.jsp" class="login-link">
-                                            <i class="fas fa-user"></i> Login
+                            <!-- User Menu -->
+                            <c:choose>
+                                <c:when test="${sessionScope.acc != null}">
+                                    <li class="user-menu">
+                                        <a href="#" class="user-link">
+                                            <i class="fas fa-user"></i> ${sessionScope.acc.username}
                                         </a>
-                                    </c:if>
-                                    <c:if test="${sessionScope.acc != null}">
+                                    </li>
+                                    <li>
                                         <a href="cart.jsp" class="shopping-cart">
                                             <i class="fas fa-shopping-cart"></i>
                                             <span class="badge">${sessionScope.size == null ? 0 : sessionScope.size}</span>
                                         </a>
+                                    </li>
+                                    <li>
                                         <a href="LogoutControl" class="logout-link">
                                             <i class="fas fa-sign-out-alt"></i> Logout
                                         </a>
-                                    </c:if>
-                                </div>
-                            </li>
+                                    </li>
+                                </c:when>
+                                <c:otherwise>
+                                    <li>
+                                        <a href="login.jsp" class="login-link">
+                                            <i class="fas fa-user"></i> Login
+                                        </a>
+                                    </li>
+                                </c:otherwise>
+                            </c:choose>
                         </ul>
                     </nav>
                 </div>
@@ -134,7 +144,86 @@
     color: #F28123;
 }
 
-/* Dropdown styles */
+/* User Menu Styles */
+.user-menu .user-link {
+    color: #333;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 15px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+.user-menu .user-link:hover {
+    background: #f8f9fa;
+    color: #F28123;
+}
+
+.user-menu .user-link i {
+    font-size: 16px;
+}
+
+/* Login/Logout Button Styles */
+.login-link, .logout-link {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 15px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.login-link {
+    background: #F28123;
+    color: white !important;
+}
+
+.login-link:hover {
+    background: #e67416;
+    transform: translateY(-2px);
+}
+
+.logout-link {
+    background: #dc3545;
+    color: white !important;
+}
+
+.logout-link:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+}
+
+/* Shopping Cart Styles */
+.shopping-cart {
+    position: relative;
+    color: #333;
+    padding: 8px 15px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+.shopping-cart:hover {
+    color: #F28123;
+    background: #f8f9fa;
+}
+
+.shopping-cart .badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #F28123;
+    color: white;
+    border-radius: 50%;
+    padding: 3px 6px;
+    font-size: 10px;
+    min-width: 18px;
+    text-align: center;
+}
+
+/* Dropdown Menu Styles */
 .history-dropdown .sub-menu {
     position: absolute;
     top: 100%;
@@ -168,65 +257,6 @@
 
 .history-dropdown .sub-menu li a:hover {
     background: #f8f9fa;
-}
-
-/* Header Icons */
-.header-icons {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.header-icons a {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    padding: 8px 15px;
-    border-radius: 20px;
-    transition: all 0.3s ease;
-    text-decoration: none;
-}
-
-.login-link {
-    background: #F28123;
-    color: white !important;
-}
-
-.login-link:hover {
-    background: #e67416;
-    transform: translateY(-2px);
-}
-
-.logout-link {
-    background: #dc3545;
-    color: white !important;
-}
-
-.logout-link:hover {
-    background: #c82333;
-    transform: translateY(-2px);
-}
-
-.shopping-cart {
-    position: relative;
-    color: #333;
-}
-
-.shopping-cart:hover {
-    color: #F28123;
-}
-
-.shopping-cart .badge {
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    background: #F28123;
-    color: white;
-    border-radius: 50%;
-    padding: 3px 6px;
-    font-size: 10px;
-    min-width: 18px;
-    text-align: center;
 }
 
 /* Mobile Menu */
@@ -304,9 +334,8 @@
         padding-left: 20px;
     }
     
-    .header-icons {
-        flex-direction: column;
-        align-items: flex-start;
+    .user-menu, .shopping-cart, .logout-link {
+        margin: 5px 0;
     }
 }
 </style>
