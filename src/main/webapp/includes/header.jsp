@@ -57,10 +57,10 @@
 
                             <!-- User Menu -->
                             <c:choose>
-                                <c:when test="${sessionScope.acc != null}">
+                                <c:when test="${sessionScope.user != null}">
                                     <li class="user-menu">
                                         <a href="#" class="user-link">
-                                            <i class="fas fa-user"></i> ${sessionScope.acc.username}
+                                            <i class="fas fa-user"></i> ${sessionScope.user}
                                         </a>
                                     </li>
                                     <li>
@@ -70,7 +70,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="LogoutControl" class="logout-link">
+                                        <a href="logout" class="logout-link">
                                             <i class="fas fa-sign-out-alt"></i> Logout
                                         </a>
                                     </li>
