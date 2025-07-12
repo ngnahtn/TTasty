@@ -1,90 +1,105 @@
 package dao;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 import jakarta.persistence.TypedQuery;
 import java.util.List;
 import model.User;
+import utils.JPAUtil;
 
 //JPQL(jpa) lam viec truc tiep voi model khac voi jdbc
 
 public class UserDAO {
 
-    private static final EntityManagerFactory emf =
-            Persistence.createEntityManagerFactory("TTastyShop");
-
     public void insertUser(User user) {
-        EntityManager em = emf.createEntityManager();
-        em.getTransaction().begin();
-        em.persist(user);
-        em.getTransaction().commit();
-        em.close();
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            em.getTransaction().begin();
+            em.persist(user);
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
     }
 
     public List<User> getAll() {
-        EntityManager em = emf.createEntityManager();
-        TypedQuery<User> query = em.createQuery("SELECT u FROM User u", User.class);
-        List<User> list = query.getResultList();
-        em.close();
-        return list;
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            TypedQuery<User> query = em.createQuery("SELECT u FROM User u", User.class);
+            return query.getResultList();
+        } finally {
+            em.close();
+        }
     }
 
     public boolean checkUsername(String username) {
-        EntityManager em = emf.createEntityManager();
-        Long count = em.createQuery("SELECT COUNT(u) FROM User u WHERE u.username = :username", Long.class) // COUNT() trong JPA trả về kiểu Long (số nguyên lớn).
-                       .setParameter("username", username)
-                       .getSingleResult(); // Thực hiện truy vấn và lấy duy nhất một kết quả, là tổng số dòng có username trùng.
-        em.close(); 
-        return count > 0;
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            Long count = em.createQuery("SELECT COUNT(u) FROM User u WHERE u.username = :username", Long.class)
+                           .setParameter("username", username)
+                           .getSingleResult();
+            return count > 0;
+        } finally {
+            em.close();
+        }
     }
 
     public boolean checkEmailDuplicate(String email) {
-        EntityManager em = emf.createEntityManager();
-        Long count = em.createQuery("SELECT COUNT(u) FROM User u WHERE u.email = :email", Long.class)
-                       .setParameter("email", email)
-                       .getSingleResult();
-        em.close();
-        return count > 0;
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            Long count = em.createQuery("SELECT COUNT(u) FROM User u WHERE u.email = :email", Long.class)
+                           .setParameter("email", email)
+                           .getSingleResult();
+            return count > 0;
+        } finally {
+            em.close();
+        }
     }
 
     public boolean checkOldPasswordDuplicateByUsername(String username, String newPassword) {
-        EntityManager em = emf.createEntityManager();
-        TypedQuery<String> query = em.createQuery("SELECT u.password FROM User u WHERE u.username = :username", String.class);
-        query.setParameter("username", username);
-        List<String> result = query.getResultList();
-        em.close();
-        if (!result.isEmpty()) {
-            return result.get(0).equals(newPassword);
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            TypedQuery<String> query = em.createQuery("SELECT u.password FROM User u WHERE u.username = :username", String.class);
+            query.setParameter("username", username);
+            List<String> result = query.getResultList();
+            if (!result.isEmpty()) {
+                return result.get(0).equals(newPassword);
+            }
+            return false;
+        } finally {
+            em.close();
         }
-        return false;
     }
 
     public boolean checkEmail(String email) {
-        return checkEmailDuplicate(email); // same as duplicate check
+        return checkEmailDuplicate(email);
     }
 
     public User getUserByEmail(String email) {
-        EntityManager em = emf.createEntityManager();
-        TypedQuery<User> query = em.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class);
-        query.setParameter("email", email);
-        List<User> result = query.getResultList();
-        em.close();
-        return result.isEmpty() ? null : result.get(0);
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            TypedQuery<User> query = em.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class);
+            query.setParameter("email", email);
+            List<User> result = query.getResultList();
+            return result.isEmpty() ? null : result.get(0);
+        } finally {
+            em.close();
+        }
     }
 
     public User getUserByUsername(String username) {
-        EntityManager em = emf.createEntityManager();
-        TypedQuery<User> query = em.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class);
-        query.setParameter("username", username);
-        List<User> result = query.getResultList();
-        em.close();
-        return result.isEmpty() ? null : result.get(0);
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            TypedQuery<User> query = em.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class);
+            query.setParameter("username", username);
+            List<User> result = query.getResultList();
+            return result.isEmpty() ? null : result.get(0);
+        } finally {
+            em.close();
+        }
     }
 
-    // Method mới gộp login và get user
     public User loginAndGetUser(String username, String password) {
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = JPAUtil.getEntityManager();
         try {
             TypedQuery<User> query = em.createQuery(
                 "SELECT u FROM User u WHERE u.username = :username AND u.password = :password",
@@ -99,30 +114,31 @@ public class UserDAO {
         }
     }
 
-    // Giữ lại method này để tương thích ngược
     public boolean login(String username, String password) {
         return loginAndGetUser(username, password) != null;
     }
 
     public void changePassword(String username, String newPassword) {
-        EntityManager em = emf.createEntityManager();
-        em.getTransaction().begin();
-        User user = getUserByUsername(username); // Re-use method
-        if (user != null) {
-            user.setPassword(newPassword);
-            em.merge(user); // update
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            em.getTransaction().begin();
+            User user = getUserByUsername(username);
+            if (user != null) {
+                user.setPassword(newPassword);
+                em.merge(user);
+            }
+            em.getTransaction().commit();
+        } finally {
+            em.close();
         }
-        em.getTransaction().commit();
-        em.close();
     }
     
     public User getUserById(int id) {
-    EntityManager em = emf.createEntityManager();
-    try {
-        return em.find(User.class, id); // JPA sẽ tự tìm theo khóa chính
-    } finally {
-        em.close();
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            return em.find(User.class, id);
+        } finally {
+            em.close();
+        }
     }
-}
-
 }
