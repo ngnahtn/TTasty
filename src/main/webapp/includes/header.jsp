@@ -126,14 +126,27 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    min-height: 80px;
+}
+
+.site-logo {
+    display: flex;
+    align-items: center;
 }
 
 .site-logo img {
     transition: all 0.3s ease;
+    max-height: 60px;
 }
 
 .site-logo img:hover {
     transform: scale(1.05);
+}
+
+.main-menu {
+    height: 100%;
+    display: flex;
+    align-items: center;
 }
 
 .main-menu ul {
@@ -142,23 +155,31 @@
     list-style: none;
     display: flex;
     align-items: center;
+    height: 100%;
 }
 
 .main-menu ul li {
     position: relative;
     margin: 0 15px;
+    height: 100%;
+    display: flex;
+    align-items: center;
 }
 
 .main-menu ul li a {
     color: #333;
     font-weight: 500;
     text-decoration: none;
-    padding: 10px 15px;
+    padding: 8px 15px;
     display: flex;
     align-items: center;
-    gap: 8px;
     border-radius: 8px;
     transition: all 0.3s ease;
+}
+
+.main-menu ul li a i {
+    margin-right: 5px;
+    font-size: 1.1rem;
 }
 
 .main-menu ul li a:hover,
@@ -167,15 +188,13 @@
     background: #f8f9fa;
 }
 
-.main-menu ul li a i {
-    font-size: 1.1rem;
-}
-
 /* User Menu Styles */
 .user-menu .user-link {
     background: #f8f9fa;
     border-radius: 20px;
     padding: 8px 15px;
+    display: flex;
+    align-items: center;
 }
 
 .user-menu .user-link:hover {
@@ -218,6 +237,8 @@
     position: relative;
     padding: 8px 15px !important;
     border-radius: 20px !important;
+    display: flex;
+    align-items: center;
 }
 
 .shopping-cart .badge {
@@ -258,6 +279,7 @@
 .history-dropdown .sub-menu li {
     margin: 0;
     padding: 0;
+    height: auto;
 }
 
 .history-dropdown .sub-menu li a {
@@ -285,6 +307,7 @@
         padding: 20px;
         box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         flex-direction: column;
+        height: auto;
     }
     
     .main-menu ul.show {
@@ -294,9 +317,12 @@
     .main-menu ul li {
         margin: 10px 0;
         width: 100%;
+        height: auto;
+        justify-content: center;
     }
     
     .main-menu ul li a {
+        width: 100%;
         justify-content: center;
     }
     
