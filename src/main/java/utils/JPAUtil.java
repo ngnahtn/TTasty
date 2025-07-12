@@ -3,6 +3,8 @@ package utils;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -11,12 +13,25 @@ public class JPAUtil {
     private static volatile EntityManagerFactory emf;
     
     static {
+        initializeFactory();
+    }
+    
+    private static void initializeFactory() {
         try {
             LOGGER.info("Initializing EntityManagerFactory...");
-            emf = Persistence.createEntityManagerFactory("TTastyShop");
+            
+            // Thêm các properties để debug
+            Map<String, String> properties = new HashMap<>();
+            properties.put("hibernate.show_sql", "true");
+            properties.put("hibernate.format_sql", "true");
+            
+            emf = Persistence.createEntityManagerFactory("TTastyShop", properties);
             LOGGER.info("EntityManagerFactory initialized successfully");
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error initializing EntityManagerFactory", e);
+            if (e.getCause() != null) {
+                LOGGER.log(Level.SEVERE, "Root cause: ", e.getCause());
+            }
             throw new ExceptionInInitializerError(e);
         }
     }
@@ -25,18 +40,16 @@ public class JPAUtil {
         if (emf == null) {
             synchronized (JPAUtil.class) {
                 if (emf == null) {
-                    try {
-                        LOGGER.info("Re-initializing EntityManagerFactory...");
-                        emf = Persistence.createEntityManagerFactory("TTastyShop");
-                        LOGGER.info("EntityManagerFactory re-initialized successfully");
-                    } catch (Exception e) {
-                        LOGGER.log(Level.SEVERE, "Error re-initializing EntityManagerFactory", e);
-                        throw new RuntimeException("Could not initialize EntityManagerFactory", e);
-                    }
+                    initializeFactory();
                 }
             }
         }
-        return emf.createEntityManager();
+        try {
+            return emf.createEntityManager();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error creating EntityManager", e);
+            throw new RuntimeException("Could not create EntityManager", e);
+        }
     }
     
     public static void closeEntityManagerFactory() {
